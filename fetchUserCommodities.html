@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Commodities - Farm to Customer</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="farm.png">
+</head>
+<body class="bg-light">
+
+    <!-- Navigation Bar -->
+    <header class="bg-success text-white py-4">
+        <div class="container">
+            <h1 class="text-center">Farm to Customer</h1>
+            <nav>
+                <ul class="nav justify-content-center">
+                    <li class="nav-item"><a href="Farmerhomepage.html" class="nav-link text-white">Home</a></li>
+                    <li class="nav-item"><a href="addCommodities.html" class="nav-link text-white">Add Commodity</a></li>
+                    <li class="nav-item"><a href="contact.html" class="nav-link text-white">Contact</a></li>
+                    <li class="nav-item"><a href="logout.html" class="nav-link text-white">Logout</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Commodities Content -->
+    <div class="container my-5">
+        <h2 class="text-center mb-4">My Commodities</h2>
+        
+        <!-- Loading Indicator -->
+        <div id="loading" class="text-center my-5">
+            <div class="spinner-border text-success" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+        
+        <!-- Commodities Table -->
+        <div class="table-responsive" id="commoditiesTable" style="display: none;">
+            <table class="table table-striped table-hover">
+                <thead class="table-success">
+                    <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Price ($)</th>
+                        <th scope="col">Location</th>
+                    </tr>
+                </thead>
+                <tbody id="commoditiesBody">
+                    <!-- Commodity Rows Will Be Injected Here -->
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- No Commodities Message -->
+        <div id="noCommodities" class="text-center my-5" style="display: none;">
+            <p class="fs-4">No commodities found.</p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4">
+        <div class="container text-center">
+            <p>&copy; 2024 Farm to Customer</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Function to get query parameters
+        function getQueryParams() {
+            const params = {};
+            const queryString = window.location.search.substring(1);
+            const regex = /([^&=]+)=([^&]*)/g;
+            let m;
+            while (m = regex.exec(queryString)) {
+                params[decodeURIComponent(m[1])] = decodeURIComponent(m[2]);
+            }
+            return params;
+        }
+    
+        // Fetch and display commodities
+        async function fetchCommodities() {
+            const params = getQueryParams();
+            const userId = params.userId;
+    
+            if (!userId) {
+                alert('User ID not found. Please login again.');
+                window.location.href = 'login.html';
+                return;
+            }
+    
+            const apiUrl = `http://localhost:8080/api/userCommodities?id=${encodeURIComponent(userId)}`;
+    
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+    
+                if (response.ok) {
+                    const commodities = await response.json();
+                    document.getElementById('loading').style.display = 'none';
+    
+                    if (commodities.length > 0) {
+                        const tbody = document.getElementById('commoditiesBody');
+                        commodities.forEach(commodity => {
+                            const row = document.createElement('tr');
+    
+                            const nameCell = document.createElement('td');
+                            nameCell.textContent = commodity.name;
+                            row.appendChild(nameCell);
+    
+                            const priceCell = document.createElement('td');
+                            // Handle null or undefined price
+                            priceCell.textContent = commodity.price != null ? commodity.price.toFixed(2) : 'N/A';
+                            row.appendChild(priceCell);
+    
+                            const locationCell = document.createElement('td');
+                            locationCell.textContent = commodity.location;
+                            row.appendChild(locationCell);
+    
+                            tbody.appendChild(row);
+                        });
+                        document.getElementById('commoditiesTable').style.display = 'block';
+                    } else {
+                        document.getElementById('noCommodities').style.display = 'block';
+                    }
+                } else {
+                    document.getElementById('loading').style.display = 'none';
+                    alert('Failed to fetch commodities. Please try again.');
+                }
+            } catch (error) {
+                document.getElementById('loading').style.display = 'none';
+                console.error('Error fetching commodities:', error);
+                alert('An error occurred while fetching commodities.');
+            }
+        }
+    
+        // Initialize on page load
+        window.addEventListener('DOMContentLoaded', fetchCommodities);
+    </script>
+</body>
+</html>

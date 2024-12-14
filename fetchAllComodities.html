@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fetch Commodity Data - Farm to Customer</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="farm.png">
+</head>
+<body class="bg-light">
+
+    <!-- Navigation Bar -->
+    <header class="bg-success text-white py-4">
+        <div class="container">
+            <h1 class="text-center">Farm to Customer</h1>
+            <nav>
+                <ul class="nav justify-content-center">
+                    <li class="nav-item"><a href="Farmerhomepage.html?userId=6" class="nav-link text-white">Home</a></li>
+                    <li class="nav-item"><a href="viewCart.html" class="nav-link text-white">View Cart</a></li>
+                    <li class="nav-item"><a href="logout.html" class="nav-link text-white">Logout</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Fetch Commodity Data Content -->
+    <div class="container my-5">
+        <h2 class="text-center mb-4">Browse Commodities by State</h2>
+
+        <!-- State Selection Form -->
+        <form id="stateForm" class="row g-3 justify-content-center">
+            <div class="col-auto">
+                <label for="stateSelect" class="visually-hidden">Select State</label>
+                <select class="form-select" id="stateSelect" required>
+                    <!-- Options will be populated dynamically -->
+                </select>
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary mb-3">Fetch Commodities</button>
+            </div>
+        </form>
+
+        <!-- Loading Indicator -->
+        <div id="loading" class="text-center my-5" style="display: none;">
+            <div class="spinner-border text-success" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+
+        <!-- Commodities Table -->
+        <div class="table-responsive" id="commoditiesTable" style="display: none;">
+            <table class="table table-striped table-hover">
+                <thead class="table-success">
+                    <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Location</th>
+                        <th scope="col">Farmer Name</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody id="commoditiesBody">
+                    <!-- Commodity Rows Will Be Injected Here -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- No Commodities Message -->
+        <div id="noCommodities" class="text-center my-5" style="display: none;">
+            <p class="fs-4">No commodities found for the selected state.</p>
+        </div>
+
+        <!-- Error Message -->
+        <div id="errorMessage" class="alert alert-danger text-center" style="display: none;">
+            An error occurred while fetching commodities. Please try again later.
+        </div>
+
+        <!-- Cart Count -->
+        <div class="text-center my-5">
+            <h4>Items in Cart: <span id="cartCount">0</span></h4>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4">
+        <div class="container text-center">
+            <p>&copy; 2024 Farm to Customer</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Include states.js -->
+    <script src="states.js"></script>
+    <!-- Your Custom Script -->
+    <script>
+        // Populate the state dropdown on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            populateStateDropdown('stateSelect', 'Select a State');
+        });
+
+        // Fetch Commodity Data Function
+        async function fetchCommodityData(state) {
+            const apiUrl = `http://localhost:8080/api/fetchAllUserCommodities?state=${encodeURIComponent(state)}`;
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    const commodities = await response.json();
+                    displayCommodities(commodities);
+                } else {
+                    showError();
+                }
+            } catch (error) {
+                console.error('Error fetching commodities:', error);
+                showError();
+            }
+        }
+
+        // Display Commodities in the Table
+        function displayCommodities(commodities) {
+            document.getElementById('loading').style.display = 'none';
+
+            if (commodities.length > 0) {
+                const tbody = document.getElementById('commoditiesBody');
+                tbody.innerHTML = ''; // Clear previous data
+
+                commodities.forEach(commodity => {
+                    const row = document.createElement('tr');
+
+                    const nameCell = document.createElement('td');
+                    nameCell.textContent = commodity.name;
+                    row.appendChild(nameCell);
+
+                    const locationCell = document.createElement('td');
+                    locationCell.textContent = commodity.location;
+                    row.appendChild(locationCell);
+
+                    const farmerNameCell = document.createElement('td');
+                    farmerNameCell.textContent = commodity.farmer.name;
+                    row.appendChild(farmerNameCell);
+
+                    const actionCell = document.createElement('td');
+                    const purchaseButton = document.createElement('button');
+                    purchaseButton.textContent = 'Purchase';
+                    purchaseButton.className = 'btn btn-success';
+                    purchaseButton.addEventListener('click', function() {
+                        addToCart(commodity);
+                    });
+                    actionCell.appendChild(purchaseButton);
+
+                    const increaseButton = document.createElement('button');
+                    increaseButton.textContent = '+';
+                    increaseButton.className = 'btn btn-secondary mx-1';
+                    increaseButton.addEventListener('click', function() {
+                        increaseQuantity(commodity);
+                    });
+                    actionCell.appendChild(increaseButton);
+
+                    const decreaseButton = document.createElement('button');
+                    decreaseButton.textContent = '-';
+                    decreaseButton.className = 'btn btn-secondary mx-1';
+                    decreaseButton.addEventListener('click', function() {
+                        decreaseQuantity(commodity);
+                    });
+                    actionCell.appendChild(decreaseButton);
+
+                    row.appendChild(actionCell);
+                    tbody.appendChild(row);
+                });
+
+                document.getElementById('commoditiesTable').style.display = 'block';
+                document.getElementById('noCommodities').style.display = 'none';
+            } else {
+                document.getElementById('commoditiesTable').style.display = 'none';
+                document.getElementById('noCommodities').style.display = 'block';
+            }
+        }
+
+        // Show Error Message
+        function showError() {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('commoditiesTable').style.display = 'none';
+            document.getElementById('noCommodities').style.display = 'none';
+            document.getElementById('errorMessage').style.display = 'block';
+        }
+
+        // Handle Form Submission
+        document.getElementById('stateForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const state = document.getElementById('stateSelect').value;
+
+            if (state) {
+                // Show loading indicator and hide previous results
+                document.getElementById('loading').style.display = 'block';
+                document.getElementById('commoditiesTable').style.display = 'none';
+                document.getElementById('noCommodities').style.display = 'none';
+                document.getElementById('errorMessage').style.display = 'none';
+
+                // Fetch and display commodities
+                fetchCommodityData(state);
+            }
+        });
+
+        // Add to Cart Function
+        function addToCart(commodity) {
+            const cartCountElement = document.getElementById('cartCount');
+            let cartCount = parseInt(cartCountElement.textContent);
+            cartCount += 1;
+            cartCountElement.textContent = cartCount;
+
+            // Get existing cart items from local storage
+            const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+
+            // Check if the item is already in the cart
+            const existingItem = cartItems.find(item => item.id === commodity.id);
+            if (existingItem) {
+                // Increment the quantity if the item is already in the cart
+                existingItem.quantity += 1;
+            } else {
+                // Add the new item to the cart with quantity 1
+                cartItems.push({ ...commodity, quantity: 1 });
+            }
+
+            // Save the updated cart items back to local storage
+            localStorage.setItem('cartItems', JSON.stringify(cartItems));
+        }
+
+        // Increase Quantity Function
+        function increaseQuantity(commodity) {
+            const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+            const existingItem = cartItems.find(item => item.id === commodity.id);
+            if (existingItem) {
+                existingItem.quantity += 1;
+                localStorage.setItem('cartItems', JSON.stringify(cartItems));
+                updateCartCount();
+            }
+        }
+
+        // Decrease Quantity Function
+        function decreaseQuantity(commodity) {
+            const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+            const existingItem = cartItems.find(item => item.id === commodity.id);
+            if (existingItem && existingItem.quantity > 1) {
+                existingItem.quantity -= 1;
+                localStorage.setItem('cartItems', JSON.stringify(cartItems));
+                updateCartCount();
+            } else if (existingItem && existingItem.quantity === 1) {
+                // Remove item from cart if quantity is 1
+                const index = cartItems.indexOf(existingItem);
+                cartItems.splice(index, 1);
+                localStorage.setItem('cartItems', JSON.stringify(cartItems));
+                updateCartCount();
+            }
+        }
+
+        // Update Cart Count Function
+        function updateCartCount() {
+            const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+            const cartCount = cartItems.reduce((total, item) => total + item.quantity, 0);
+            document.getElementById('cartCount').textContent = cartCount;
+        }
+
+        // Initialize Cart Count on Page Load
+        document.addEventListener('DOMContentLoaded', function() {
+            updateCartCount();
+        });
+    </script>
+</body>
+</html>

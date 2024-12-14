@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farm to Customer</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="farm.png">
+</head>
+<body class="bg-light">
+
+    <!-- Navigation Bar -->
+    <header class="bg-success text-white py-4">
+        <div class="container">
+            <h1 class="text-center">Farm to Customer</h1>
+            <nav>
+                <ul class="nav justify-content-center">
+                    <li class="nav-item"><a href="index.html" class="nav-link text-white">Home</a></li>
+                    <li class="nav-item"><a href="register.html" class="nav-link text-white">Register</a></li>
+                    <li class="nav-item"><a href="login.html" class="nav-link text-white">Login</a></li>
+                    <li class="nav-item"><a href="#about" class="nav-link text-white">About</a></li>
+                    <li class="nav-item"><a href="#products" class="nav-link text-white">Products</a></li>
+                    <li class="nav-item"><a href="#contact" class="nav-link text-white">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Content Section (Dynamic Content Based on Page) -->
+    <div class="container my-5" id="content">
+
+        <!-- About Section -->
+        <section id="about">
+            <h2 class="text-center mb-4">About Us</h2>
+            <p>Farmers often rely on intermediaries, reducing their profits and market access. This project proposes a platform to connect farmers directly with consumers...</p>
+        </section>
+
+        <!-- Products Section -->
+        <section id="products">
+            <h2 class="text-center mb-4">Our Products</h2>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card">
+                        <img src="vegetables.jpg" class="card-img-top" alt="Vegetables">
+                        <div class="card-body">
+                            <h5 class="card-title">Fresh Vegetables</h5>
+                            <p class="card-text">Locally grown, pesticide-free vegetables straight from the farm.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <img src="fruits.jpg" class="card-img-top" alt="Fruits">
+                        <div class="card-body">
+                            <h5 class="card-title">Seasonal Fruits</h5>
+                            <p class="card-text">Enjoy a variety of fresh, organic fruits harvested in season.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <img src="yogurt.jpg" class="card-img-top" alt="Dairy Products">
+                        <div class="card-body">
+                            <h5 class="card-title">Dairy Products</h5>
+                            <p class="card-text">High-quality milk, cheese, and yogurt from trusted local farmers.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Login Section (for login.html page) -->
+        <section id="login-form">
+            <h3 class="text-center mb-4">Login</h3>
+            <form id="loginForm">
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email address</label>
+                    <input type="email" class="form-control" id="email" name="email" required>
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="password" name="password" required>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Login</button>
+            </form>
+            <div class="mt-3 text-center">
+                Don't have an account? <a href="register.html">Register here</a>
+            </div>
+        </section>
+
+        <!-- Register Section (for register.html page) -->
+        <section id="register-form">
+            <h2 class="text-center mb-4">Register User</h2>
+            <form id="registerForm">
+                <div class="mb-3">
+                    <label for="name" class="form-label">Name</label>
+                    <input type="text" class="form-control" id="name" name="name" required>
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="email" name="email" required>
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="password" name="password" required>
+                </div>
+                <div class="mb-3">
+                    <label for="role" class="form-label">Role</label>
+                    <select id="role" name="role" class="form-select" required>
+                        <option value="Farmer">Farmer</option>
+                        <option value="Consumer">Consumer</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-success w-100">Register</button>
+            </form>
+            <div class="mt-3 text-center">
+                Already have an account? <a href="login.html">Login here</a>
+            </div>
+        </section>
+        
+        <!-- Contact Section -->
+        <section id="contact">
+            <h2 class="text-center mb-4">Contact Us</h2>
+            <form>
+                <div class="mb-3">
+                    <label for="name" class="form-label">Name</label>
+                    <input type="text" class="form-control" id="name" required>
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="email" required>
+                </div>
+                <div class="mb-3">
+                    <label for="message" class="form-label">Message</label>
+                    <textarea class="form-control" id="message" rows="4" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Send</button>
+            </form>
+        </section>
+
+    </div> <!-- End content -->
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4">
+        <div class="container text-center">
+            <p>&copy; 2024 Farm to Customer</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Add your JavaScript logic for login and register forms
+        const apiUrl = 'http://localhost:8080/api';
+
+        // Register form handler
+        document.getElementById('registerForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const role = document.getElementById('role').value;
+
+            const response = await fetch(`${apiUrl}/register`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ name, email, password, role })
+            });
+
+            const result = await response.json();
+            alert('User registered successfully');
+        });
+
+        // Login form handler
+        document.getElementById('loginForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            const response = await fetch(`${apiUrl}/login`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email, password })
+            });
+
+            if (response.ok) {
+                window.location.href = 'homepage.html';
+            } else {
+                alert('Failed to login');
+            }
+        });
+    </script>
+</body>
+</html>

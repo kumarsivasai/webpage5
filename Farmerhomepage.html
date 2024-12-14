@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homepage - Farm to Customer</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="farm.png">
+</head>
+<body class="bg-light">
+
+    <!-- Navigation Bar -->
+    <header class="bg-success text-white py-4">
+        <div class="container">
+            <h1 class="text-center">Farm to Customer</h1>
+            <nav>
+                <ul class="nav justify-content-center">
+                    <li class="nav-item"><a href="homepage.html" class="nav-link text-white">Home</a></li>
+
+                    <li class="nav-item"><a href="addCommodities.html" class="nav-link text-white">Add Commodity</a></li>
+                    <li class="nav-item">
+                        <a href="fetchUserCommodities.html" id="viewCommoditiesLink" class="nav-link text-white">View Your Commodities</a>
+                    </li>
+                    <li class="nav-item"><a href="logout.html" class="nav-link text-white">Logout</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Homepage Content -->
+    <div class="container my-5">
+        <h2 class="text-center mb-4">Welcome to Farm to Customer!</h2>
+        <p>This platform connects farmers directly with consumers, ensuring fresh, locally-grown produce is available to all.</p>
+
+        <section>
+            <h3>Featured Products</h3>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card">
+                        <img src="vegetables.jpg" class="card-img-top" alt="Vegetables">
+                        <div class="card-body">
+                            <h5 class="card-title">Fresh Vegetables</h5>
+                            <p class="card-text">Locally grown, pesticide-free vegetables straight from the farm.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <img src="fruits.jpg" class="card-img-top" alt="Fruits">
+                        <div class="card-body">
+                            <h5 class="card-title">Seasonal Fruits</h5>
+                            <p class="card-text">Enjoy a variety of fresh, organic fruits harvested in season.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <img src="yogurt.jpg" class="card-img-top" alt="Dairy Products">
+                        <div class="card-body">
+                            <h5 class="card-title">Dairy Products</h5>
+                            <p class="card-text">High-quality milk, cheese, and yogurt from trusted local farmers.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- User ID Display -->
+        <div class="mt-4">
+            <h4>User ID: <span id="userIdDisplay"></span></h4>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4">
+        <div class="container text-center">
+            <p>&copy; 2024 Farm to Customer</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS and dependencies -->
+    <!-- Bootstrap JS and dependencies -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    // Function to get query parameters
+    function getQueryParams() {
+        const params = {};
+        const queryString = window.location.search.substring(1);
+        const regex = /([^&=]+)=([^&]*)/g;
+        let m;
+        while (m = regex.exec(queryString)) {
+            params[decodeURIComponent(m[1])] = decodeURIComponent(m[2]);
+        }
+        return params;
+    }
+
+    // Function to update the "View Your Commodities" link with userId
+    function updateCommoditiesLink() {
+        const params = getQueryParams();
+        const userId = params.userId;
+
+        if (userId) {
+            const commoditiesLink = document.getElementById('viewCommoditiesLink');
+            if (commoditiesLink) {
+                commoditiesLink.href = `fetchUserCommodities.html?userId=${encodeURIComponent(userId)}`;
+            }
+        } else {
+            console.warn('User ID not found in URL parameters.');
+        }
+    }
+
+    // Initialize on page load
+    window.addEventListener('DOMContentLoaded', updateCommoditiesLink);
+</script>
+</body>
+</html>

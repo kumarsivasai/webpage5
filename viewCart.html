@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Cart - Farm to Customer</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="farm.png">
+</head>
+<body class="bg-light">
+
+    <!-- Navigation Bar -->
+    <header class="bg-success text-white py-4">
+        <div class="container">
+            <h1 class="text-center">Farm to Customer</h1>
+            <nav>
+                <ul class="nav justify-content-center">
+                    <li class="nav-item"><a href="Farmerhomepage.html?userId=6" class="nav-link text-white">Home</a></li>
+                    <li class="nav-item"><a href="fetchAllCommodities.html" class="nav-link text-white">Browse Commodities</a></li>
+                    <li class="nav-item"><a href="logout.html" class="nav-link text-white">Logout</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Cart Content -->
+    <div class="container my-5">
+        <h2 class="text-center mb-4">Your Cart</h2>
+
+        <!-- Cart Table -->
+        <div class="table-responsive" id="cartTable" style="display: none;">
+            <table class="table table-striped table-hover">
+                <thead class="table-success">
+                    <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Location</th>
+                        <th scope="col">Farmer Name</th>
+                        <th scope="col">Quantity</th>
+                    </tr>
+                </thead>
+                <tbody id="cartBody">
+                    <!-- Cart Items Will Be Injected Here -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- No Cart Items Message -->
+        <div id="noCartItems" class="text-center my-5" style="display: none;">
+            <p class="fs-4">Your cart is empty.</p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4">
+        <div class="container text-center">
+            <p>&copy; 2024 Farm to Customer</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Your Custom Script -->
+    <script>
+        // Function to display cart items
+        function displayCartItems() {
+            const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+            const cartTable = document.getElementById('cartTable');
+            const cartBody = document.getElementById('cartBody');
+            const noCartItems = document.getElementById('noCartItems');
+
+            if (cartItems.length > 0) {
+                cartBody.innerHTML = ''; // Clear previous data
+
+                cartItems.forEach(item => {
+                    const row = document.createElement('tr');
+
+                    const nameCell = document.createElement('td');
+                    nameCell.textContent = item.name;
+                    row.appendChild(nameCell);
+
+                    const locationCell = document.createElement('td');
+                    locationCell.textContent = item.location;
+                    row.appendChild(locationCell);
+
+                    const farmerNameCell = document.createElement('td');
+                    farmerNameCell.textContent = item.farmerName;
+                    row.appendChild(farmerNameCell);
+
+                    const quantityCell = document.createElement('td');
+                    quantityCell.textContent = item.quantity;
+                    row.appendChild(quantityCell);
+
+                    cartBody.appendChild(row);
+                });
+
+                cartTable.style.display = 'block';
+                noCartItems.style.display = 'none';
+            } else {
+                cartTable.style.display = 'none';
+                noCartItems.style.display = 'block';
+            }
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', displayCartItems);
+    </script>
+</body>
+</html>
